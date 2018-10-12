@@ -5,8 +5,6 @@ import Dropzone from 'react-dropzone'
 import csv from 'csv'
 import Itens from './Itens'
 
-import ButtonExport from './ButtonExport'
-
 
 
 class App extends Component {
@@ -39,7 +37,7 @@ constructor(props){
           <div style ={{'flexDirection': "row",justifyContent:'space-between','display':"flex"}}>
          
           <Itens json={this.state.json} atributos={this.state.atributos}/> 
-          <ButtonExport />
+        >
           </div>
           
         ):(null)

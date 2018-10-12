@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import PubSub from 'pubsub-js'
 
-
-export default class Item extends React.Component {
+export default class Item extends Component {
 
 constructor(props){
     super(props);  
@@ -11,16 +9,13 @@ constructor(props){
         index: props.index,
         atrib: props.atrib,
         valSelect:"0", 
-        isValid: [],
+        isValid: [], 
 
         
     }   
     this.handleChangeInput = this.handleChangeInput.bind(this);
     this.handleChangeSelect = this.handleChangeSelect.bind(this);
 }
-
-
-
 
     render(){
         
@@ -37,17 +32,25 @@ constructor(props){
         };
 
         
-        var item = []           
+        var item = []  
+                
         
         for (let i = 0; i < this.state.data.length; i++) {
-        
-            var json = {
-                0:i,
-                1:this.state.data[i][this.state.atrib[this.state.index]],
+            this.state.valid0 = i
+            this.state.valid1 = this.state.data[i][this.state.atrib[this.state.index]]
+            this.state.valid2 = this.state.valSelect;
+            this.state.valid3 = this.state.index;
+            this.state.valid4 = this.state.data.length-1 
+
+            var jsonValidar = {
+                0: i,
+                1: this.state.data[i][this.state.atrib[this.state.index]],
                 2: this.state.valSelect,
-                3: this.state.index
+                3: this.state.index,
+                4: this.state.data.length-1
             }
-            this.props.validarCampo(json)
+
+            this.props.validarCampo(jsonValidar)
             this.validarCampo(i, this.state.data[i][this.state.atrib[this.state.index]], this.state.valSelect, this.state.index)
 
             
@@ -61,10 +64,7 @@ constructor(props){
                 </div>
             );
         }
-        PubSub.publish('VALID_FORM_'+this.state.index,this.state.isValid)
-        
-        
-       
+
         return (
                     <div style={{display:'flex', flexDirection:'column'}}>
                         
@@ -90,11 +90,6 @@ constructor(props){
         ); 
     }
 
-    
-
-    
-   
-
     handleChangeInput(e, index){
         var value = e.target.value
         var json = this.state.data; 
@@ -103,6 +98,17 @@ constructor(props){
         this.setState({
             data:json
         }) 
+
+        var jsonValidar = {
+            0: this.state.valid0,
+            1: this.state.valid1,
+            2: this.state.valid2,
+            3: this.state.valid3,
+            4: this.state.valid4
+        }
+        this.props.funcaoteste(jsonValidar);
+        this.props.validarCampo(jsonValidar)
+        
     }
 
     handleChangeSelect(e,index){
@@ -112,11 +118,15 @@ constructor(props){
             valSelect: value
         })
 
+        var json = {
+            valueSelect: value,
+            indexComponente: index
+        }
+        this.props.onChangeSelect(json)
     }
 
-    validarCampo(indexInput, valInput, select, indexComponente, lista){
+    validarCampo(indexInput, valInput, select, indexComponente){
         var json = {}
-        var lista = []
 
         if(select=="0"){
             json = {

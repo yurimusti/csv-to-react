@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Item from './Item'
-import PubSub from 'pubsub-js'
+import Button from '@material-ui/core/Button';
+
+
 
 export default class Itens extends Component{
 
@@ -11,47 +13,68 @@ export default class Itens extends Component{
         this.state = {
             atributos: props.atributos,
             json: props.json,
-            lista: [],
+            listaComponentes: [],
+            listaInputs: [],
             isValid: [],
+            exportValido:false
         }
     }
 
-
-
-    componentDidMount(){
-    
-        // var listagem = []
-        // for(var i =0; i<this.state.atributos.length;i++){
-        //     console.log(i)
-        //     PubSub.subscribe('VALID_FORM_'+i, (index,values)=> {
-        //         console.log(values)
-        //     });
-        //     //     var key = index;
-            
-        //     // var data = {
-        //     //     [key]: values
-        //     // }
-    
-        //     //     listagem.push(data)
+    teste(e){
         
-        //     // });
-        // }
-        // console.log(listagem)
+        console.log(this.state.listaComponentes)
+        //this.ValidarExportButton(this.state.json.length)
+        
     }
 
+    // componentDidMount(){
+        
+    //     if(this.ValidarExportButton(this.state.qtInput)==0){
+    //         this.setState({
+    //             exportValido: true
+    //         })
+    //     }else{
+    //         this.setState({
+    //             exportValido:false
+    //         })
+    //     }
+    // }
+
+    onChangeSelectFromChildren(valueSelect, indexComponente){
+
+    }
+
+ 
+
     render(){
+
+
+       
 
         var item = []
 
         for(let i = 0; i<this.state.atributos.length;i++){
           item.push(
-                  <Item validarCampo={(obj)=> this.validarCampo(obj[0], obj[1],obj[2],obj[3])} key={i} data={this.state.json} atrib={this.state.atributos} index={i}/>
+                  <Item onChangeSelect={(e)=> this.onChangeSelectFromChildren(e[0], e[1])} funcaoteste={(e)=>this.teste(e)} validarCampo={(obj)=> this.validarCampo(obj[0], obj[1],obj[2],obj[3],obj[4])} key={i} data={this.state.json} atrib={this.state.atributos} index={i}/>
               );
         }
     
         return(
-            <div style ={{'flexDirection': "row",justifyContent:'space-between','display':"flex"}}>
-                {item}
+            <div>
+                <div style ={{'flexDirection': "row",justifyContent:'space-between','display':"flex"}}>
+                    {item}
+                
+                </div>
+                <div>
+                    {
+                        this.state.exportValido ? (
+                            <Button variant="outlined" color="secundary">
+                                Exportar
+                            </Button>
+                    ) : (null)}
+                </div>
+               
+                
             </div>
             
         ) 
@@ -59,9 +82,8 @@ export default class Itens extends Component{
 
 
 
-    validarCampo(indexInput, valInput, select, indexComponente, lista){
+    validarCampo(indexInput, valInput, select, indexComponente, qtInput){
         var json = {}
-        var lista = []
 
         if(select=="0"){
             json = {
@@ -69,7 +91,7 @@ export default class Itens extends Component{
                 valid:this.ValidarNull(valInput),
                 indexComponente: indexComponente
             }
-           this.state.isValid[indexInput] = json 
+          
         }
         if(select=="1"){
             json = {
@@ -78,7 +100,7 @@ export default class Itens extends Component{
                 indexComponente: indexComponente,
                 msg:"Campo inválido - Text only"
             }
-           this.state.isValid[indexInput] = json 
+         
         }
 
         if(select=="2"){
@@ -88,7 +110,7 @@ export default class Itens extends Component{
                 indexComponente: indexComponente,
                 msg:"Campo inválido - Number only" 
             }
-           this.state.isValid[indexInput] = json 
+          
         }
 
         if(select=="3"){
@@ -98,7 +120,7 @@ export default class Itens extends Component{
                 indexComponente: indexComponente,
                 msg:"CPF inválido - (Verificar regra)"
             }
-           this.state.isValid[indexInput] = json 
+           
         }
 
         if(select=="4"){
@@ -108,13 +130,41 @@ export default class Itens extends Component{
                 indexComponente: indexComponente,
                 msg:"Data inválida - (Verificar regra)"
             }
-           this.state.isValid[indexInput] = json 
+           
         }
-        lista = this.state.lista;
-        lista.push(json)
-        
-     console.log(lista)
-        
+
+        var comp = this.state.listaComponentes
+        // var listaComponentes = this.state.listaComponentes;
+        // var listaInputs = this.state.listaInputs;
+        if(indexComponente==0 && indexInput==0){ 
+            for(let i = 0; i< this.state.atributos.length;i++){
+                var arr = []               
+                comp[i] = arr
+                for(let j = 0; j<= qtInput ;j++){
+                    var teste = {};
+                    
+                    comp[i][j] = teste
+                }
+            }
+        }
+        comp[indexComponente][indexInput] = json
+
+        this.state.listaComponentes = comp  
+        this.state.qtInput = qtInput;
+          
+    }
+
+    ValidarExportButton(qtInput){
+        var lista = this.state.listaComponentes;
+        var count = 0;
+        for(let i = 0; i< this.state.atributos.length;i++){
+            for (let j = 0; j < qtInput; j++) {
+                if(lista[i][j]['valid'] == false){
+                    count++
+                }
+            }
+        }
+        return count;
     }
 
     ValidarNull(texto){
