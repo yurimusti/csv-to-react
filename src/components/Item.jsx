@@ -106,7 +106,7 @@ constructor(props){
             3: this.state.valid3,
             4: this.state.valid4
         }
-        this.props.funcaoteste(jsonValidar);
+        this.props.onChangeInputChildren(jsonValidar);
         this.props.validarCampo(jsonValidar)
         
     }
@@ -120,7 +120,8 @@ constructor(props){
 
         var json = {
             valueSelect: value,
-            indexComponente: index
+            indexComponente: index,
+            isValid: this.state.isValid
         }
         this.props.onChangeSelect(json)
     }

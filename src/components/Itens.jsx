@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Item from './Item'
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import {download} from 'downloadjs';
 
 
 
@@ -16,46 +18,102 @@ export default class Itens extends Component{
             listaComponentes: [],
             listaInputs: [],
             isValid: [],
-            exportValido:false
+            exportValid: true,
+            count: 0
         }
+
+        this.onChangeSelectFromChildren = this.onChangeSelectFromChildren.bind(this)
+        this.MudarState = this.MudarState.bind(this)
+        
     }
 
-    teste(e){
+    MudarState(e){
+        this.setState({
+            exportValid:e
+        })
+    }
+
+    onChangeInputChildren(e){
         
+        // var count = 0;
+        // for(let i = 0 ; i< this.state.atributos.length;i++){
+            
+        //     for(let j =0; j<= this.state.qtInput;j++){
+        //         if(this.state.listaComponentes[i][j].valid == false){
+        //             this.count++
+        //         }
+        //     }
+        // }
         console.log(this.state.listaComponentes)
-        //this.ValidarExportButton(this.state.json.length)
+       
+
+     
         
     }
 
-    // componentDidMount(){
-        
-    //     if(this.ValidarExportButton(this.state.qtInput)==0){
-    //         this.setState({
-    //             exportValido: true
-    //         })
-    //     }else{
-    //         this.setState({
-    //             exportValido:false
-    //         })
-    //     }
-    // }
-
-    onChangeSelectFromChildren(valueSelect, indexComponente){
-
+    componentDidMount(){
+       
+        console.log(this.state.listaComponentes)
+        // let count = 0;
+        // for(let i = 0 ; i< this.state.atributos.length;i++){
+            
+        //     for(let j =0; j<= this.state.qtInput;j++){
+        //         if(this.state.listaComponentes[i][j].valid == false){
+        //            console.log(this.state.listaComponentes[i][j])
+        //             //this.state.count++
+        //         }
+        //     }
+        // }
+    
     }
 
+    onChangeSelectFromChildren(valueSelect){
+        var teste = (valueSelect.isValid)
+       
+        var isValido = this.state.listaComponentes;
+        isValido[valueSelect.indexComponente] = valueSelect.isValid
+       
+        this.setState({
+            listaComponentes: isValido
+        })
+       
+       console.log(this.state.listaComponentes)
+        
+    }
+
+    onClickButtonExport(){
+        this.state.count = 0;
+        for(let j =0; j< this.state.atributos.length;j++){
+            for(let i =0; i<= this.state.qtInput;i++){
+                if(this.state.listaComponentes[j][i].valid==false){
+                    this.state.count++
+                }
+                
+            }
+        }
+
+        if(this.state.count == 0){
+            this.setState({
+                valid:true
+            })
+        }else{
+            this.setState({
+                valid:false
+            })
+        }
+        this.setState({
+            open:true
+        })
+
+    }
  
 
     render(){
-
-
-       
-
         var item = []
 
         for(let i = 0; i<this.state.atributos.length;i++){
           item.push(
-                  <Item onChangeSelect={(e)=> this.onChangeSelectFromChildren(e[0], e[1])} funcaoteste={(e)=>this.teste(e)} validarCampo={(obj)=> this.validarCampo(obj[0], obj[1],obj[2],obj[3],obj[4])} key={i} data={this.state.json} atrib={this.state.atributos} index={i}/>
+                  <Item onChangeSelect={(e)=> this.onChangeSelectFromChildren(e)} onChangeInputChildren={(e)=>this.onChangeInputChildren(e)} validarCampo={(obj)=> this.validarCampo(obj[0], obj[1],obj[2],obj[3],obj[4])} key={i} data={this.state.json} atrib={this.state.atributos} index={i}/>
               );
         }
     
@@ -66,13 +124,41 @@ export default class Itens extends Component{
                 
                 </div>
                 <div>
-                    {
-                        this.state.exportValido ? (
-                            <Button variant="outlined" color="secundary">
-                                Exportar
-                            </Button>
-                    ) : (null)}
+                    <Button variant="outlined" color="secondary" onClick={() => this.onClickButtonExport()}>
+                        Exportar
+                    </Button>
                 </div>
+                    <Snackbar
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            open={this.state.open}
+            autoHideDuration={6000}
+            onClose={{}}
+            ContentProps={{
+                'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.valid ? 'Selecione uma opção para exportar: ':'Campos inválidos, por favor verifique os campos para continuar'}</span>}
+            action={this.state.valid ? ([
+                <Button key="undo" color="secondary" size="small" onClick={this.ExportToJson}>
+                JSON
+                </Button>,
+                <Button key="undo" color="secondary" size="small" onClick={this.ExportToExcel}>
+                Excel
+                </Button>,
+                 <Button key="undo" color="secondary" size="small" onClick={()=> this.setState({open:false})}>
+                 Fechar
+                 </Button>
+            ]): ([
+                <Button key="undo" color="secondary" size="small" onClick={()=> this.setState({open:false})}>
+                Fechar
+                </Button>
+            ])
+
+                
+        }
+            />
                
                 
             </div>
@@ -80,7 +166,30 @@ export default class Itens extends Component{
         ) 
     }
 
+    ExportToJson(){
+        this.exportToJson(this.state.json)
+    }
 
+    ExportToExcel(){
+        
+    }
+
+    exportToJson(objectData) {
+        let filename = "export.json";
+        let contentType = "application/json;charset=utf-8;";
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(objectData)))], { type: contentType });
+          navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+          var a = document.createElement('a');
+          a.download = filename;
+          a.href = 'data:' + contentType + ',' + encodeURIComponent(JSON.stringify(objectData));
+          a.target = '_blank';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      }
 
     validarCampo(indexInput, valInput, select, indexComponente, qtInput){
         var json = {}
@@ -136,17 +245,20 @@ export default class Itens extends Component{
         var comp = this.state.listaComponentes
         // var listaComponentes = this.state.listaComponentes;
         // var listaInputs = this.state.listaInputs;
-        if(indexComponente==0 && indexInput==0){ 
-            for(let i = 0; i< this.state.atributos.length;i++){
-                var arr = []               
-                comp[i] = arr
-                for(let j = 0; j<= qtInput ;j++){
-                    var teste = {};
-                    
-                    comp[i][j] = teste
+        if(comp.length == 0){
+            if(indexComponente==0 && indexInput==0){ 
+                for(let i = 0; i< this.state.atributos.length;i++){
+                    var arr = []               
+                    comp[i] = arr
+                    for(let j = 0; j<= qtInput ;j++){
+                        var teste = {};
+                        
+                        comp[i][j] = teste
+                    }
                 }
             }
         }
+       
         comp[indexComponente][indexInput] = json
 
         this.state.listaComponentes = comp  
