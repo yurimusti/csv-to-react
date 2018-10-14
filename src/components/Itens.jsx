@@ -109,6 +109,7 @@ export default class Itens extends Component{
  
 
     render(){
+        
         var item = []
 
         for(let i = 0; i<this.state.atributos.length;i++){
@@ -118,13 +119,14 @@ export default class Itens extends Component{
         }
     
         return(
+            
             <div>
                 <div style ={{'flexDirection': "row",justifyContent:'space-between','display':"flex"}}>
                     {item}
                 
                 </div>
                 <div>
-                    <Button variant="outlined" color="secondary" onClick={() => this.onClickButtonExport()}>
+                    <Button style={{margin:5}} variant="outlined" color="inherit" onClick={() => this.onClickButtonExport()}>
                         Exportar
                     </Button>
                 </div>
@@ -167,7 +169,7 @@ export default class Itens extends Component{
     }
 
     ExportToJson(){
-        this.exportToJson(this.state.json)
+        
     }
 
     ExportToExcel(){
