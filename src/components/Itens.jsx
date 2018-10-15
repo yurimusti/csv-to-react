@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 import Item from './Item'
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
-import {download} from 'downloadjs';
-
-
 
 export default class Itens extends Component{
 
@@ -24,6 +21,7 @@ export default class Itens extends Component{
 
         this.onChangeSelectFromChildren = this.onChangeSelectFromChildren.bind(this)
         this.MudarState = this.MudarState.bind(this)
+        this.ExportToJson = this.ExportToJson.bind(this)
         
     }
 
@@ -34,37 +32,7 @@ export default class Itens extends Component{
     }
 
     onChangeInputChildren(e){
-        
-        // var count = 0;
-        // for(let i = 0 ; i< this.state.atributos.length;i++){
-            
-        //     for(let j =0; j<= this.state.qtInput;j++){
-        //         if(this.state.listaComponentes[i][j].valid == false){
-        //             this.count++
-        //         }
-        //     }
-        // }
-        console.log(this.state.listaComponentes)
-       
 
-     
-        
-    }
-
-    componentDidMount(){
-       
-        console.log(this.state.listaComponentes)
-        // let count = 0;
-        // for(let i = 0 ; i< this.state.atributos.length;i++){
-            
-        //     for(let j =0; j<= this.state.qtInput;j++){
-        //         if(this.state.listaComponentes[i][j].valid == false){
-        //            console.log(this.state.listaComponentes[i][j])
-        //             //this.state.count++
-        //         }
-        //     }
-        // }
-    
     }
 
     onChangeSelectFromChildren(valueSelect){
@@ -76,8 +44,6 @@ export default class Itens extends Component{
         this.setState({
             listaComponentes: isValido
         })
-       
-       console.log(this.state.listaComponentes)
         
     }
 
@@ -131,13 +97,12 @@ export default class Itens extends Component{
                     </Button>
                 </div>
                     <Snackbar
-            anchorOrigin={{
+                anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
             }}
             open={this.state.open}
             autoHideDuration={6000}
-            onClose={{}}
             ContentProps={{
                 'aria-describedby': 'message-id',
             }}
@@ -169,7 +134,8 @@ export default class Itens extends Component{
     }
 
     ExportToJson(){
-        
+        const download = require('downloadjs')
+        download(JSON.stringify(this.state.json),"json.txt","text/plain")
     }
 
     ExportToExcel(){

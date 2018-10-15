@@ -4,6 +4,9 @@ import '../../node_modules/font-awesome/css/font-awesome.min.css'
 import Dropzone from 'react-dropzone'
 import csv from 'csv'
 import Itens from './Itens'
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 
 
 
@@ -24,12 +27,17 @@ constructor(props){
   render() {
     return (
       <div>
-        
+        <AppBar position="static" color="primary">
+        <Toolbar>
+          <Typography variant="h6" color="secundary">
+            CSV to ReactJS -
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <div style={{flexDirection:'column', display:'flex', marginTop:15, justifyItems:'center', alignItems:'center'}}>
         {
           this.state.controlDropZone ? (<Dropzone onDrop={this.onDrop.bind(this)}></Dropzone>):(null)
         }
-        
-       
 
         {
           this.state.atributos.length > 0 ? (
@@ -42,11 +50,8 @@ constructor(props){
           
         ):(null)
         }
-    
         
-        
-      
-
+      </div>
       </div>
     );
   }

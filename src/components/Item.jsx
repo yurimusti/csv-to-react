@@ -76,7 +76,6 @@ export default class Item extends Component {
             error={this.state.isValid[i]["valid"] ? false : true}
             id="outlined-name"
             label={this.state.atrib[this.state.index]}
-            className={{}}
             value={this.state.data[i][this.state.atrib[this.state.index]]}
             onChange={e => this.handleChangeInput(e, i)}
             margin="normal"
