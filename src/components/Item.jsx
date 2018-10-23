@@ -144,17 +144,20 @@ export default class Item extends Component {
   }
 
   validarCampo(indexInput, valInput, select, indexComponente) {
-    var json = {};
+    var json = {};  
 
-    if (select == "0") {
+    switch(select){
+
+      case '0':
       json = {
         id: indexInput,
         valid: this.ValidarNull(valInput),
         indexComponente: indexComponente
       };
       this.state.isValid[indexInput] = json;
-    }
-    if (select == "1") {
+      break;
+
+      case '1':
       json = {
         id: indexInput,
         valid: this.ValidarTexto(valInput),
@@ -162,9 +165,9 @@ export default class Item extends Component {
         msg: "Campo inválido - Text only"
       };
       this.state.isValid[indexInput] = json;
-    }
+      break;
 
-    if (select == "2") {
+      case '2':
       json = {
         id: indexInput,
         valid: this.ValidarNumeros(valInput),
@@ -172,9 +175,9 @@ export default class Item extends Component {
         msg: "Campo inválido - Number only"
       };
       this.state.isValid[indexInput] = json;
-    }
+      break;
 
-    if (select == "3") {
+      case '3':
       json = {
         id: indexInput,
         valid: this.ValidarCPF(valInput),
@@ -182,9 +185,9 @@ export default class Item extends Component {
         msg: "CPF inválido - (Verificar regra)"
       };
       this.state.isValid[indexInput] = json;
-    }
+      break;
 
-    if (select == "4") {
+      case '4':
       json = {
         id: indexInput,
         valid: this.ValidarData(valInput),
@@ -192,7 +195,10 @@ export default class Item extends Component {
         msg: "Data inválida - (Verificar regra)"
       };
       this.state.isValid[indexInput] = json;
-    }
+      break;
+    } 
+  
+  
   }
 
   ValidarNull(texto) {
